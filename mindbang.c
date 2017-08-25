@@ -1,109 +1,59 @@
 #include "mindbang.h"
 
-classMindbang *classMindbang_new(char* pProg, long lTapeSize) {
-	int i;
-	classMindbang *pMb = &(classMindbang) { NULL, NULL };
-	pMb->pProg = pProg;
-	pMb->pTape = (char*)malloc(lTapeSize * sizeof(char));
-	for (i = 0; i < lTapeSize; i++) {
-		pMb->pTape[i] = 0;
-	}
-	for (i = 0; i < 13; i++)
-		putchar(pProg[i]);
-	return pMb;
-}
+unsigned char tape[30000] = {0};
+unsigned char* ptr = tape;
 
-void classMindbang_pInc(classMindbang *this) {
-	++this->pTape;
-}
-
-void classMindbang_pDec(classMindbang *this) {
-	++this->pTape;
-}
-
-void classMindbang_dInc(classMindbang *this) {
-	++*this->pTape;
-}
-
-void classMindbang_dDec(classMindbang *this) {
-	--*this->pTape;
-}
-void classMindbang_dPut(classMindbang *this) {
-	printf("PUTTING: %c aka %d\n", *this->pTape, *this->pTape);
-	putchar(*this->pTape);
-}
-
-void classMindbang_dGet(classMindbang *this) {
-	*this->pTape=getchar();
-}
-
-void classMindbang_whlB(classMindbang *this) {
-	if (!*this->pTape) {
-		int cBr = 1;
-		do {
-			this->pProg++;
-			if (*this->pProg == '[') cBr++;
-			else if (*this->pProg == ']') cBr--;
-		} while ( cBr != 0 );
-		this->pProg++;
-	}
-}
-
-void classMindbang_whlE(classMindbang *this) {
-	if (*this->pTape) {
-		int cBr = 1;
-		do {
-			this->pProg--;
-			if (*this->pProg == '[')
-				cBr++;
-			else if (*this->pProg == ']')
-				cBr--;
-		} while ( cBr != 0 );
-		++this->pProg;
-	}
-}
-
-void classMindbang_eval(classMindbang *this) {
-	int i;
-	char* newPoint = this->pProg;
-	this->pProg = newPoint;
-	printf("\nnewPoint=%d; this->pProg=%d\n", (int)newPoint, (int)this->pProg);
-	for (i = 0; i < 13; i++){
-		putchar(*(newPoint + i));
-	}
-	printf("\nStarting at %d\n", (int)this->pProg);
-	printf("Starting at %d\n", (int)this->pProg);
-    while (*this->pProg) {
-		switch (*this->pProg) {
+void mindbang_interpret(char *prog) {
+    while (*prog) {
+		printf("%d", *prog);
+		switch (*prog) {
 		case '>':
-			classMindbang_pInc(this);
+			++ptr;
 			break;
 		case '<':
-			classMindbang_pDec(this);
+			++ptr;
 			break;
 		case '+':
-			classMindbang_dInc(this);
+			++*ptr;
 			break;
 		case '-':
-			classMindbang_dDec(this);
+			printf("About to reduce addr %d from %d\n", ptr, *ptr);
+			--*ptr;
+			printf("Reduced addr %d to %d\n", ptr, *ptr);
 			break;
 		case '.':
-			classMindbang_dPut(this);
+			putchar(*ptr);
 			break;
 		case ',':
-			classMindbang_dGet(this);
+			*ptr=getchar();
 			break;
 		case '[':
-			classMindbang_whlB(this);
+			if (!*ptr) {
+				int cBr = 1;
+				do {
+					prog++;
+					if (*prog == '[') cBr++;
+					else if (*prog == ']') cBr--;
+				} while ( cBr != 0 );
+				prog++;
+			}
+			printf("NOW AT %d with character %c\n", (char)prog, *prog);
 			break;
 		case ']':
-			classMindbang_whlE(this);
+			if (*ptr) {
+				int cBr = 1;
+				do {
+					prog--;
+					if (*prog == '[')
+						cBr--;
+					else if (*prog == ']')
+						cBr++;
+				} while ( cBr != 0 );
+				++prog;
+			}
+			printf("NOW AT %d with character %c\n", (char)prog, *prog);
 			break;
 		}
-		(this->pProg)++;
+		prog++;
 	}
-	printf("Ending at %d\n", (int)&this->pProg);
-	printf("Ending at %d\n", (int)&this->pProg);
-	printf("Ending at %d\n", (int)&this->pProg);
-	printf("Ending at %d\n", (int)&this->pProg);
 }
