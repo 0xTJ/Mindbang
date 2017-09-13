@@ -1,25 +1,29 @@
 #include "mindbang.h"
 
-unsigned char tape[30000] = {0};
-unsigned char* ptr = tape;
-
 void mindbang_interpret(char *prog) {
-    while (*prog) {
-		printf("%d", *prog);
+	unsigned char tape[30000] = {0};
+	unsigned char* ptr = tape;
+	unsigned char* i;
+	while (*prog) {
 		switch (*prog) {
+		case '#':
+			printf("DEBUGGING:\n");
+			for (i = tape; i <= ptr; i++) {
+				printf("%d ", *i);
+			}
+			printf("\n");
+			break;
 		case '>':
 			++ptr;
 			break;
 		case '<':
-			++ptr;
+			--ptr;
 			break;
 		case '+':
 			++*ptr;
 			break;
 		case '-':
-			printf("About to reduce addr %d from %d\n", ptr, *ptr);
 			--*ptr;
-			printf("Reduced addr %d to %d\n", ptr, *ptr);
 			break;
 		case '.':
 			putchar(*ptr);
@@ -35,9 +39,7 @@ void mindbang_interpret(char *prog) {
 					if (*prog == '[') cBr++;
 					else if (*prog == ']') cBr--;
 				} while ( cBr != 0 );
-				prog++;
 			}
-			printf("NOW AT %d with character %c\n", (char)prog, *prog);
 			break;
 		case ']':
 			if (*ptr) {
@@ -49,9 +51,7 @@ void mindbang_interpret(char *prog) {
 					else if (*prog == ']')
 						cBr++;
 				} while ( cBr != 0 );
-				++prog;
 			}
-			printf("NOW AT %d with character %c\n", (char)prog, *prog);
 			break;
 		}
 		prog++;
