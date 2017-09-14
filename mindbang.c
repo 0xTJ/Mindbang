@@ -6,8 +6,7 @@ void mindbang_interpret(char *prog) {
 	unsigned char* i;
 	while (*prog) {
 		switch (*prog) {
-		case '#':
-			printf("DEBUGGING:\n");
+		case '~':
 			for (i = tape; i <= ptr; i++) {
 				printf("%d ", *i);
 			}
