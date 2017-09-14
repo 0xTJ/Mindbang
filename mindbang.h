@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void mindbang_interpret(char *prog);
+enum exit_codes{Success, Failure, SubNotDef, UnxpctdSubEnd};
+
+int mindbang_interpret(char *prog);
 
 #endif

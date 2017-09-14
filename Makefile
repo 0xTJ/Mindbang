@@ -1,5 +1,8 @@
-all: demo.c 
-	gcc -g -Wall -O0 -o demo demo.c mindbang.c
+CFLAGS = -g -Wall
 
-clean: 
-	$(RM) demo
+# Should be equivalent to your list of C files, if you don't build selectively
+SRC=$(wildcard *.c)
+
+all: $(SRC)
+	gcc -o demo $(CFLAGS) $(SRC)
+ 
