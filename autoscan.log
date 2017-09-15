@@ -1,0 +1,4 @@
+autoscan: warning: missing AC_CHECK_HEADERS([stdlib.h]) wanted by: 
+	mindbang.h:5
+autoscan: warning: missing AC_FUNC_MALLOC wanted by: 
+	mindbang.c:83
